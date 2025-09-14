@@ -42,11 +42,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~
-            if [ ! -d "flask-bootstrap-app" ]; then
-              git clone https://github.com/itdbcy/ga3.git flask-bootstrap-app
-            fi
+            # Kill any existing processes on the app port
+            sudo pkill -f "python3 app.py" || true
+            sudo fuser -k ${{ secrets.APP_PORT }}/tcp || true
+            # Remove existing project and clone fresh
+            rm -rf flask-bootstrap-app
+            git clone https://github.com/itdbcy/ga3.git flask-bootstrap-app
             cd flask-bootstrap-app
-            git pull origin main
             if ! command -v pip3 &> /dev/null; then
               sudo apt-get update && sudo apt-get install -y python3-pip || sudo yum install -y python3-pip
             fi
