@@ -46,9 +46,9 @@ jobs:
             sudo pkill -f "python3 app.py" || true
             sudo fuser -k ${{ secrets.APP_PORT }}/tcp || true
             # Remove existing project and clone fresh
-            rm -rf flask-bootstrap-app
-            git clone https://github.com/itdbcy/ga3.git flask-bootstrap-app
-            cd flask-bootstrap-app
+            rm -rf ga3
+            git clone https://github.com/itdbcy/ga3.git ga3
+            cd ga3/flask-bootstrap-app
             if ! command -v pip3 &> /dev/null; then
               sudo apt-get update && sudo apt-get install -y python3-pip || sudo yum install -y python3-pip
             fi
