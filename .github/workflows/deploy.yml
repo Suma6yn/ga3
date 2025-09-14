@@ -42,8 +42,23 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/flask-bootstrap-app
-            git pull origin main
-            python3 -m pip install -r requirements.txt
-            export $(cat .env | xargs)
-              sudo ufw allow $APP_PORT
-            python3 app.py &
+              if [ ! -d "flask-bootstrap-app" ]; then
+                git clone https://github.com/${{ github.repository }}.git flask-bootstrap-app
+              fi
+              cd flask-bootstrap-app
+              git pull origin main
+              if ! command -v pip3 &> /dev/null; then
+                sudo apt-get update && sudo apt-get install -y python3-pip || sudo yum install -y python3-pip
+              fi
+              echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" > app/.env
+              echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> app/.env
+              echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> app/.env
+              echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> app/.env
+              echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> app/.env
+              echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> app/.env
+              echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> app/.env
+              echo "APP_PORT=${{ secrets.APP_PORT }}" >> app/.env
+              pip3 install -r requirements.txt
+              sudo ufw allow ${{ secrets.APP_PORT }}
+              export $(cat app/.env | xargs)
+              python3 app.py &
