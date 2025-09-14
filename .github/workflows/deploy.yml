@@ -50,6 +50,10 @@ jobs:
               if ! command -v pip3 &> /dev/null; then
                 sudo apt-get update && sudo apt-get install -y python3-pip || sudo yum install -y python3-pip
               fi
+
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+          
               echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" > app/.env
               echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> app/.env
               echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> app/.env
