@@ -42,9 +42,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~
-            # Kill any existing processes on the app port
-            sudo pkill -f "python3 app.py" || true
-            sudo fuser -k ${{ secrets.APP_PORT }}/tcp || true
             # Remove existing project and clone fresh
             rm -rf flask-bootstrap-app
             git clone https://github.com/${{ github.repository }}.git flask-bootstrap-app
