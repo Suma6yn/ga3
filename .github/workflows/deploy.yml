@@ -68,13 +68,20 @@ jobs:
             sudo ufw allow ${{ secrets.APP_PORT }}
             export $(cat .env | xargs)
             # Start the app with proper background execution
+            echo "Starting Flask app..."
             nohup python3 app.py > app.log 2>&1 < /dev/null &
-            # Ensure the process is running
-            sleep 2
-            if pgrep -f "python3 app.py" > /dev/null; then
-              echo "Flask app started successfully"
+            APP_PID=$!
+            echo "Started Flask app with PID: $APP_PID"
+            # Wait a moment for the app to start
+            sleep 3
+            # Check if the process is still running
+            if kill -0 $APP_PID 2>/dev/null; then
+              echo "Flask app is running successfully on port ${{ secrets.APP_PORT }}"
+              echo "App logs:"
+              tail -n 10 app.log
             else
-              echo "Failed to start Flask app"
+              echo "Flask app failed to start"
+              echo "Error logs:"
               cat app.log
               exit 1
             fi
