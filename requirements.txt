@@ -1,0 +1,4 @@
+python-dotenv
+Flask-MySQLdb
+Flask==2.2.2
+Flask-Bootstrap==3.3.7.1
