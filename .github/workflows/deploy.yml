@@ -1,6 +1,8 @@
 name: Deploy Flask Todo App to AWS EC2
 
 on:
+  workflow_dispatch:
+    
   push:
     branches: [ main ]
 
