@@ -65,4 +65,4 @@ jobs:
             mysql -h${{ secrets.MYSQL_HOST }} -u${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.MYSQL_DB }};"
             sudo ufw allow ${{ secrets.APP_PORT }}
             export $(cat .env | xargs)
-            python3 app.py &
+            nohup python3 app.py > app.log 2>&1 &
