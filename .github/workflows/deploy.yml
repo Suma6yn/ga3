@@ -51,7 +51,7 @@ jobs:
               sudo apt-get update && sudo apt-get install -y python3-pip || sudo yum install -y python3-pip
             fi
             # Install MySQL client libraries for mysqlclient
-            sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev build-essential pkg-config || sudo yum install -y mysql-devel gcc pkgconfig
+            sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev build-essential pkg-config mysql-client || sudo yum install -y mysql-devel gcc pkgconfig mysql
             pip3 install --break-system-packages -r requirements.txt
             echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" > .env
             echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
@@ -61,6 +61,8 @@ jobs:
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
             echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env
+            # Create MySQL database if it doesn't exist
+            mysql -h${{ secrets.MYSQL_HOST }} -u${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.MYSQL_DB }};"
             sudo ufw allow ${{ secrets.APP_PORT }}
             export $(cat .env | xargs)
             python3 app.py &
