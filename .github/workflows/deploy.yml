@@ -30,9 +30,9 @@ jobs:
           echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
           echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> .env
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
-            echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
@@ -50,15 +50,17 @@ jobs:
             if ! command -v pip3 &> /dev/null; then
               sudo apt-get update && sudo apt-get install -y python3-pip || sudo yum install -y python3-pip
             fi
+            # Install MySQL client libraries for mysqlclient
+            sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev build-essential pkg-config || sudo yum install -y mysql-devel gcc pkgconfig
             pip3 install --break-system-packages -r requirements.txt
-            echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" > app/.env
-            echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> app/.env
-            echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> app/.env
-            echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> app/.env
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> app/.env
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> app/.env
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> app/.env
-            echo "APP_PORT=${{ secrets.APP_PORT }}" >> app/.env
+            echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}" > .env
+            echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+            echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+            echo "MYSQL_DB=${{ secrets.MYSQL_DB }}" >> .env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+            echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env
             sudo ufw allow ${{ secrets.APP_PORT }}
-            export $(cat app/.env | xargs)
+            export $(cat .env | xargs)
             python3 app.py &
