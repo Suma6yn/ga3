@@ -67,4 +67,14 @@ jobs:
             mysql -h${{ secrets.MYSQL_HOST }} -u${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.MYSQL_DB }};"
             sudo ufw allow ${{ secrets.APP_PORT }}
             export $(cat .env | xargs)
-            nohup python3 app.py > app.log 2>&1 &
+            # Start the app with proper background execution
+            nohup python3 app.py > app.log 2>&1 < /dev/null &
+            # Ensure the process is running
+            sleep 2
+            if pgrep -f "python3 app.py" > /dev/null; then
+              echo "Flask app started successfully"
+            else
+              echo "Failed to start Flask app"
+              cat app.log
+              exit 1
+            fi
