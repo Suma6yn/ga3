@@ -67,20 +67,25 @@ jobs:
             mysql -h${{ secrets.MYSQL_HOST }} -u${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE IF NOT EXISTS ${{ secrets.MYSQL_DB }};"
             sudo ufw allow ${{ secrets.APP_PORT }}
             export $(cat .env | xargs)
-            # Start the app with proper background execution
+            # Start the app with proper background execution and full detachment
             echo "Starting Flask app..."
             nohup python3 app.py > app.log 2>&1 < /dev/null &
             APP_PID=$!
-            echo "Started Flask app with PID: $APP_PID"
+            disown $APP_PID
+            echo "Started Flask app with PID: $APP_PID and detached from session"
             # Wait a moment for the app to start
-            sleep 3
+            sleep 5
             # Check if the process is still running
-            if kill -0 $APP_PID 2>/dev/null; then
+            if ps -p $APP_PID > /dev/null 2>&1; then
               echo "Flask app is running successfully on port ${{ secrets.APP_PORT }}"
+              echo "Process status:"
+              ps -p $APP_PID -o pid,ppid,cmd
               echo "App logs:"
               tail -n 10 app.log
+              echo "Checking if app is listening on port:"
+              netstat -tlnp | grep ${{ secrets.APP_PORT }} || echo "Port not yet listening"
             else
-              echo "Flask app failed to start"
+              echo "Flask app failed to start or crashed"
               echo "Error logs:"
               cat app.log
               exit 1
