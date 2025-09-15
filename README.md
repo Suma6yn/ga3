@@ -18,6 +18,16 @@ This is a simple Flask application that utilizes Bootstrap 5 to create a beautif
   (Download it from https://dev.mysql.com/downloads/installer/)
 - pip (Python package manager)
 
+## Use this Command to Create new user
+
+```CREATE USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Secret123!';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost' WITH GRANT OPTION;
+CREATE USER 'admin'@'%' IDENTIFIED WITH mysql_native_password BY 'Secret123!';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+```
+
+
 ## Setup Instructions
 
 ### 1. Clone the Repository
@@ -97,5 +107,9 @@ tail -f app.log
 - Use firewalls and security groups to restrict access to your app port.
 
 ## License
+
+
+
+
 
 MIT
