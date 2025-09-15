@@ -2,65 +2,100 @@
 
 This is a simple Flask application that utilizes Bootstrap 5 to create a beautiful user interface. The application serves as a starting point for building web applications with Flask and Bootstrap.
 
-## Project Structure
-
-```
-flask-bootstrap-app
-├── app
-│   ├── __init__.py
-│   ├── routes.py
-│   ├── templates
-│   │   └── index.html
-│   └── static
-│       └── css
-│           └── style.css
-├── requirements.txt
-└── README.md
-```
-
-## Installation
-
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd flask-bootstrap-app
-   ```
-
-2. Create a virtual environment:
-   ```
-   python -m venv venv
-   ```
-
-3. Activate the virtual environment:
-   - On Windows:
-     ```
-     venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```
-     source venv/bin/activate
-     ```
-
-4. Install the required packages:
-   ```
-   pip install -r requirements.txt
-   ```
-
-## Running the Application
-
-To run the application, use the following command:
-```
-flask run
-```
-
-The application will be accessible at `http://127.0.0.1:5000/`.
 
 ## Features
 
-- Home page with a responsive layout using Bootstrap 5.
-- Custom CSS styles for enhanced appearance.
-- Easy to extend and modify for additional features.
+- Responsive Bootstrap 5 UI
+- Add, complete, and delete todos
+- MySQL database integration
+- Environment variable support via `.env`
+- Easy deployment and logging
+
+## Prerequisites
+
+- Python 3.9+
+- MySQL server
+  (Download it from https://dev.mysql.com/downloads/installer/)
+- pip (Python package manager)
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repo-url>
+cd flask-bootstrap-app
+```
+
+### 2. Create the `.env` File
+
+Create a `.env` file in the project root with your configuration:
+
+```
+SECRET_KEY=your_secret_key
+MYSQL_HOST=localhost
+MYSQL_USER=root
+MYSQL_PASSWORD=your_password
+MYSQL_DB=july25_todo_app
+APP_PORT=5000
+```
+
+### 3. Install System Dependencies
+
+For Ubuntu/Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y python3 python3-pip default-libmysqlclient-dev build-essential pkg-config mysql-client
+```
+
+### 4. Install Python Dependencies
+
+```bash
+pip3 install --break-system-packages -r requirements.txt
+```
+
+### 5. Create the MySQL Database
+
+```bash
+mysql -hlocalhost -uroot -p'your_password' -e "CREATE DATABASE IF NOT EXISTS july25_todo_app;"
+```
+
+### 6. Run the Application
+
+For demo/development:
+
+```bash
+python3 app.py
+```
+
+For background/production:
+
+```bash
+nohup python3 app.py > app.log 2>&1 &
+```
+
+### 7. Access the App
+
+Open your browser and go to:
+
+```
+http://<server-ip>:5000
+```
+
+## Logs
+
+To view logs:
+
+```bash
+tail -f app.log
+```
+
+## Security
+
+- **Do not commit your `.env` file to source control.**
+- Use firewalls and security groups to restrict access to your app port.
 
 ## License
 
-This project is licensed under the MIT License.
+MIT

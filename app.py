@@ -9,6 +9,22 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 PORT = os.getenv('APP_PORT', 5000)
 
+
+def create_database_if_not_exists():
+    # Connect to MySQL server (not a specific DB)
+    conn = pymysql.connect(
+        host=os.getenv('MYSQL_HOST', ''),
+        user=os.getenv('MYSQL_USER', ''),
+        password=os.getenv('MYSQL_PASSWORD', ''),
+        cursorclass=pymysql.cursors.DictCursor
+    )
+    db_name = os.getenv('MYSQL_DB', '')
+    with conn.cursor() as cursor:
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
+    conn.close()
+
+create_database_if_not_exists()
+
 def get_db_connection():    
     return pymysql.connect(
         host=os.getenv('MYSQL_HOST', ''),
@@ -75,4 +91,4 @@ def delete_todo(todo_id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=PORT)
+    app.run(debug=False, host='0.0.0.0', port=PORT)
